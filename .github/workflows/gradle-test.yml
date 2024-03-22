@@ -1,0 +1,39 @@
+name: Run gradlew test
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # https://github.com/actions/setup-java?tab=readme-ov-file#supported-version-syntax
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'liberica'
+          java-version: '17'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Run gradlew clean test on main
+        if: github.ref == 'refs/heads/main'
+        run: ./gradlew clean test
+
+      - name: Run gradlew test on develop
+        if: github.ref == 'refs/heads/develop'
+        run: ./gradlew test

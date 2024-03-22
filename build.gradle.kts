@@ -21,11 +21,18 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
 }
 
-tasks.withType<Test> {
-	useJUnitPlatform()
+tasks {
+    all {
+        outputs.cacheIf { true }
+    }
 }
 
 tasks.test {
-    useJUnitPlatform()
     jvmArgs("-Xshare:off")
+    useJUnitPlatform()
+}
+
+apply(from = "dumpJsa.gradle.kts")
+tasks.withType<JavaExec> {
+    dependsOn("dumpJsa")
 }

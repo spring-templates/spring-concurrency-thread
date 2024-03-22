@@ -1,8 +1,8 @@
-name: Run gradlew test
+name: Run gradlew clean test on main
 
 on:
   pull_request:
-    branches-ignore:
+    branches:
       - main
 
 jobs:
@@ -20,5 +20,5 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run gradlew test
-        run: ./gradlew test
+      - name: Run gradlew clean test on main
+        run: ./gradlew clean test

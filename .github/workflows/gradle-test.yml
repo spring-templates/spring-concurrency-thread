@@ -30,3 +30,14 @@ jobs:
 
             -   name: Run gradlew test
                 run: ./gradlew test --warning-mode=all
+
+            -   name: Upload test coverage to Codecov.io
+                uses: codecov/codecov-action@v4
+                with:
+                    token: ${{ secrets.CODECOV_TOKEN }} # required
+                    slug: spring-templates/spring-concurrency-thread
+                    fail_ci_if_error: true # optional (default = false)
+                    verbose: true # optional (default = false)
+#                    files: build\reports\jacoco\test\jacocoTestReport.xml
+#                    flags: unittests # optional
+#                    name: codecov-umbrella # optional

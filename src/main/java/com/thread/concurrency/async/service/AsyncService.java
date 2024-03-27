@@ -8,11 +8,11 @@ import java.util.concurrent.CompletableFuture;
 @Service
 public class AsyncService {
     @Async
-    public CompletableFuture<String> voidParamStringReturn(){
-        System.out.println("비동기적으로 실행 - "+
-            Thread.currentThread().getName());
+    public CompletableFuture<String> voidParamStringReturn(long waitTime){
+//        System.out.println("비동기적으로 실행 - "+
+//            Thread.currentThread().getName());
         try{
-            Thread.sleep(1000);
+            Thread.sleep(waitTime);
             return CompletableFuture.completedFuture("hello world");
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

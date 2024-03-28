@@ -15,10 +15,18 @@ jobs:
             -   uses: actions/setup-java@v4
                 with:
                     distribution: 'liberica'
-                    java-version: '17'
+                    java-version: '21'
 
             -   name: Grant execute permission for gradlew
                 run: chmod +x gradlew
 
             -   name: Run gradlew clean test on main
-                run: ./gradlew clean test
+                run: ./gradlew clean test --warning-mode=all
+
+            -   name: Upload test coverage to Codecov.io
+                uses: codecov/codecov-action@v4
+                with:
+                    token: ${{ secrets.CODECOV_TOKEN }}
+                    slug: spring-templates/spring-concurrency-thread
+                    fail_ci_if_error: true 
+                    verbose: true 

@@ -15,7 +15,7 @@ jobs:
             -   uses: actions/setup-java@v4
                 with:
                     distribution: 'liberica'
-                    java-version: '17'
+                    java-version: '21'
 
             -   name: Cache Gradle packages
                 uses: actions/cache@v4
@@ -29,4 +29,13 @@ jobs:
                 run: chmod +x gradlew
 
             -   name: Run gradlew test
-                run: ./gradlew test
+                run: ./gradlew test --warning-mode=all
+
+            -   name: Upload test coverage to Codecov.io
+                uses: codecov/codecov-action@v4
+                with:
+                    token: ${{ secrets.CODECOV_TOKEN }}
+                    slug: spring-templates/spring-concurrency-thread
+                    fail_ci_if_error: true 
+                    verbose: true 
+                    flags: unittests

@@ -20,7 +20,7 @@ import java.util.concurrent.*;
 public class SynchronizedCounterTest {
 
     private final int counteNumber = 1;
-    private final int totalCount = 100;
+    private final int totalCount = 10000;
     private static final Logger logger = LoggerFactory.getLogger(SynchronizedCounterTest.class);
 
     /**
@@ -35,7 +35,7 @@ public class SynchronizedCounterTest {
         int initalCount = counter.show();
         int numberOfThreads = 15;
         ExecutorService service = Executors.newFixedThreadPool(15);
-        CountDownLatch latch = new CountDownLatch(100);
+        CountDownLatch latch = new CountDownLatch(totalCount);
         for (int i = 0; i < totalCount; i++) {
             service.submit(() -> {
                 counter.add(counteNumber);

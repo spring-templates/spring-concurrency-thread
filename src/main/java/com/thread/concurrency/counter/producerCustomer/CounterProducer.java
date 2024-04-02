@@ -1,13 +1,16 @@
 package com.thread.concurrency.counter.producerCustomer;
 
-public class CounterProducer {
-    private final CounterBroker counterBroker;
+import java.util.concurrent.BlockingQueue;
+import java.util.function.Function;
 
-    public CounterProducer(CounterBroker counterBroker) {
-        this.counterBroker = counterBroker;
+public class CounterProducer {
+    private final BlockingQueue<Function<Integer, Integer>> queue;
+
+    public CounterProducer(BlockingQueue<Function<Integer, Integer>> queue) {
+        this.queue = queue;
     }
 
-    public void add(int value){
-        counterBroker.addEvent(value);
+    public void add(int value) throws InterruptedException {
+        queue.put((c) -> c + value);
     }
 }

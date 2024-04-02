@@ -1,7 +1,7 @@
 package com.thread.concurrency.counter.producerCustomer;
 
 public class CounterProducer {
-    private CounterBroker counterBroker;
+    private final CounterBroker counterBroker;
 
     public CounterProducer(CounterBroker counterBroker) {
         this.counterBroker = counterBroker;

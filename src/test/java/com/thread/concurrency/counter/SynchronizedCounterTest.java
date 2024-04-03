@@ -20,21 +20,21 @@ import java.util.concurrent.*;
 public class SynchronizedCounterTest {
 
     private final int counteNumber = 1;
-    private final int totalCount = 10000;
+    private final int totalCount = 5000000;
+    private final int maxThreadNumber = 15;
     private static final Logger logger = LoggerFactory.getLogger(SynchronizedCounterTest.class);
 
-    /**
-     * 실행 완료까지 871ms 정도 소요
-     * @throws InterruptedException
-     */
+    @Autowired
+    SynchronizedCounter counter;
+
     @Test
-    @DisplayName("synchronized로 스레드 안전한 카운터로 동시에 여러 더하기 수행하기. 활동성 문제 예상")
+    @DisplayName("synchronized로 스레드 안전한 카운터로 동시에 여러 더하기 수행하기.")
     public void 여러_더하기_수행_Executor() throws InterruptedException {
-        SynchronizedCounter counter = new SynchronizedCounter();
+
         LocalTime lt1 = LocalTime.now();
         int initalCount = counter.show();
-        int numberOfThreads = 15;
-        ExecutorService service = Executors.newFixedThreadPool(15);
+
+        ExecutorService service = Executors.newFixedThreadPool(maxThreadNumber);
         CountDownLatch latch = new CountDownLatch(totalCount);
         for (int i = 0; i < totalCount; i++) {
             service.submit(() -> {
@@ -46,13 +46,10 @@ public class SynchronizedCounterTest {
         int finalCount = counter.show();
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
-        logger.info("여러_더하기_수행_Executor 테스트가 걸린 시간 : "+dif/1000000+"ms");
-        Assertions.assertEquals(initalCount+totalCount*counteNumber, finalCount);
+        logger.info("여러_더하기_수행_Executor 테스트가 걸린 시간 : " + ((float)dif / 1000000) + "ms");
+        Assertions.assertEquals(initalCount + totalCount * counteNumber, finalCount);
     }
 
-    /**
-     * 실행 완료까지 1061ms 소요
-     */
     @Test
     @DisplayName("synchronized로 스레드 안전한 카운터로 동시에 여러 더하기 수행하기. 활동성 문제 예상")
     public void 여러_더하기_수행_CompletableFuture() {

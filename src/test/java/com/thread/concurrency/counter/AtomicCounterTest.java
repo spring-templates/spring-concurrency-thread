@@ -15,18 +15,18 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @SpringBootTest
-public class CompletableFutureCounterTest {
-
+public class AtomicCounterTest {
     private final int counteNumber = 1;
-    private final int totalCount = 5000;
+    private final int totalCount = 5000000;
     private final int maxThreadNumber = 15;
-    private static final Logger logger = LoggerFactory.getLogger(CompletableFutureCounterTest.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(SynchronizedCounterTest.class);
     @Autowired
-    CompletableFutureCounter counter;
+    AtomicCounter counter;
+
     @Test
-    @DisplayName("CompletableFuture로 스레드 안전한 카운터로 동시에 여러 더하기 수행하기.")
+    @DisplayName("synchronized로 스레드 안전한 카운터로 동시에 여러 더하기 수행하기.")
     public void 여러_더하기_수행_Executor() throws InterruptedException {
+
         LocalTime lt1 = LocalTime.now();
         int initalCount = counter.show();
 

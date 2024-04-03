@@ -1,7 +1,6 @@
 package com.thread.concurrency.counter;
 
-import com.thread.concurrency.counter.producerCustomer.CounterBroker;
-import com.thread.concurrency.counter.producerCustomer.CounterCustomer;
+import com.thread.concurrency.counter.producerCustomer.CounterConsumer;
 import com.thread.concurrency.counter.producerCustomer.CounterProducer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,10 +21,10 @@ public class QueueCounterTest {
     @DisplayName("producer consumer 패턴을 이용해서 더하기 이벤트 발생 스레드와 더하기 이벤트 처리 스레드를 분리하자")
     public void 프로듀서_컨슈며_더하기_멀티_프로듀서_멀티_컨슈머() throws InterruptedException {
         BlockingQueue<Function<Integer, Integer>> queue = new LinkedBlockingQueue<>(1000);
-        CounterCustomer customer = new CounterCustomer(queue);
+        CounterConsumer consumer = new CounterConsumer(queue);
         CounterProducer producer = new CounterProducer(queue);
         LocalTime lt1 = LocalTime.now();
-        int initalCount = customer.show();
+        int initalCount = consumer.show();
         ExecutorService service = Executors.newFixedThreadPool(15);
         CountDownLatch latch = new CountDownLatch(totalCount);
 
@@ -44,18 +43,16 @@ public class QueueCounterTest {
         for(int i=0; i<3; i++){
             CompletableFuture.runAsync(()->{
                 try{
-                    customer.consumEvent();
+                    consumer.consumeEvent();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             });
         }
-        latch.await();
-
-        int finalCount = customer.show();
+        int finalCount = consumer.show();
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
-        logger.info("프로듀서_컨슈며_더하기_멀티_프로듀서_단일_컨슈머 테스트가 걸린 시간 : " + dif / 1000 + "ms");
+        logger.info("프로듀서_컨슈며_더하기_멀티_프로듀서_단일_컨슈머 테스트가 걸린 시간 : " + dif / 1000000 + "ms");
         Assertions.assertEquals(initalCount + totalCount*counteNumber, finalCount);
     }
 }

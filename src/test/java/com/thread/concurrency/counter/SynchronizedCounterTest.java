@@ -46,7 +46,7 @@ public class SynchronizedCounterTest {
         int finalCount = counter.show();
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
-        logger.info("여러_더하기_수행_Executor 테스트가 걸린 시간 : "+dif/1000+"ms");
+        logger.info("여러_더하기_수행_Executor 테스트가 걸린 시간 : "+dif/1000000+"ms");
         Assertions.assertEquals(initalCount+totalCount*counteNumber, finalCount);
     }
 
@@ -80,7 +80,7 @@ public class SynchronizedCounterTest {
 
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
-        logger.info("여러_더하기_수행_CompletableFuture 테스트가 걸린 시간 : "+dif/1000+"ms");
+        logger.info("여러_더하기_수행_CompletableFuture 테스트가 걸린 시간 : "+dif/1000000+"ms");
         Assertions.assertEquals(initalCount+totalCount*counteNumber, finalCount);
     }
 }

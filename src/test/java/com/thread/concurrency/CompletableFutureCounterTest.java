@@ -27,38 +27,25 @@ public class CompletableFutureCounterTest {
 
     @Autowired
     CompletableFutureCounter counter;
-
     @Test
     @DisplayName("CompletableFuture로 스레드 안전한 카운터로 동시에 여러 더하기 수행하기.")
-    public void 여러_더하기_수행_Executor() {
-        ExecutorService executorService = Executors.newFixedThreadPool(maxThreadNumber);
+    public void 여러_더하기_수행_Executor() throws InterruptedException {
         LocalTime lt1 = LocalTime.now();
-        int initialCount = counter.show();
+        int initalCount = counter.show();
 
-        List<CompletableFuture<Void>> tasks = new ArrayList<>();
-        for(int i=0; i<totalCount; i++){
-            tasks.add(CompletableFuture.runAsync(() -> {
+        ExecutorService service = Executors.newFixedThreadPool(maxThreadNumber);
+        CountDownLatch latch = new CountDownLatch(totalCount);
+        for (int i = 0; i < totalCount; i++) {
+            service.submit(() -> {
                 counter.add(counteNumber);
-            }, executorService));
-        }
-
-        CompletableFuture<List<Void>> aggregate = CompletableFuture.completedFuture(new ArrayList<>());
-        for (CompletableFuture<Void> future : tasks) {
-            aggregate = aggregate.thenCompose(list -> {
-                try {
-                    list.add(future.get());
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-                return CompletableFuture.completedFuture(list);
+                latch.countDown();
             });
         }
-        aggregate.join(); // 전체 비동기 결과 집계
+        latch.await();
         int finalCount = counter.show();
-
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
-        logger.info("여러_더하기_수행_CompletableFuture 테스트가 걸린 시간 : "+dif/1000000+"ms");
-        Assertions.assertEquals(initialCount+totalCount*counteNumber, finalCount);
+        logger.info("여러_더하기_수행_Executor 테스트가 걸린 시간 : " + ((float)dif / 1000000) + "ms");
+        Assertions.assertEquals(initalCount + totalCount * counteNumber, finalCount);
     }
 }

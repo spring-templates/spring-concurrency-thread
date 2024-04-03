@@ -1,6 +1,6 @@
 package com.thread.concurrency;
 
-import com.thread.concurrency.counter.SynchronizedCounter;
+import com.thread.concurrency.counter.AtomicCounter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,15 +16,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @SpringBootTest
-public class SynchronizedCounterTest {
-
+public class AtomicCounterTest {
     private final int counteNumber = 1;
     private final int totalCount = 5000000;
     private final int maxThreadNumber = 15;
     private static final Logger logger = LoggerFactory.getLogger(SynchronizedCounterTest.class);
-
     @Autowired
-    SynchronizedCounter counter;
+    AtomicCounter counter;
 
     @Test
     @DisplayName("synchronized로 스레드 안전한 카운터로 동시에 여러 더하기 수행하기.")

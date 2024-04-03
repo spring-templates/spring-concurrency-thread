@@ -7,13 +7,17 @@ import java.util.concurrent.ExecutionException;
 @Component
 public class CompletableFutureCounter implements Counter{
 
-    private CompletableFuture<Integer> counter = new CompletableFuture<>();
-
+    private CompletableFuture<Integer> counter;
+    public CompletableFutureCounter(){
+        this.counter = new CompletableFuture<>();
+        counter.complete(100);
+    }
     @Override
     public void add(int value) {
-        counter = counter.thenApply((c) -> c + value);
+        synchronized (this){
+            counter = counter.thenApply((c) -> c + value);
+        }
     }
-
     @Override
     public int show() {
         try {

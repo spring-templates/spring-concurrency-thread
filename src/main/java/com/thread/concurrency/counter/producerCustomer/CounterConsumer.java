@@ -14,19 +14,23 @@ public class CounterConsumer {
     }
 
     public void consumeEvent() throws InterruptedException {
-        while (!queue.isEmpty()) {
-            System.out.println("현재 큐 사이즈 : "+queue.size());
-            Function<Integer, Integer> event = queue.take();
-            IntUnaryOperator operator = event::apply;
-            System.out.println("결과 카운트 : "+count.updateAndGet(operator));
+        synchronized (count){
+            while (!queue.isEmpty()) {
+//                System.out.println("현재 큐 사이즈 : "+queue.size());
+                Function<Integer, Integer> event = queue.take();
+                IntUnaryOperator operator = event::apply;
+                count.updateAndGet(operator);
+//                System.out.println("결과 카운트 : "+);
+            }
+
         }
     }
     public int show(){ // 큐가 비어지는 마지막 순간에 if문이 true가 되어 count를 출력해버린다...
         while(true){
-            if(queue.isEmpty()){
-                int ret = count.get();
-                System.out.println("정답은 ? : "+ret);
-                return ret;
+            synchronized (count){
+                if(queue.isEmpty()){
+                    return count.get();
+                }
             }
         }
     }

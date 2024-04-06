@@ -26,7 +26,7 @@ public class SpringThreadConcurrencyApplication {
         long initialTime = System.currentTimeMillis();
 
         // Run the test
-        int totalRequest = Integer.MAX_VALUE;
+        int totalRequest = Integer.MAX_VALUE / 1024;
         conditionalMultiThreading(totalRequest);
 
         MemoryUsage finalMemoryUsage = memoryMXBean.getHeapMemoryUsage();

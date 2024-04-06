@@ -1,7 +1,9 @@
 package com.thread.concurrency.counter.batch;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import com.thread.concurrency.counter.Counter;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,25 +13,9 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.util.stream.Stream;
 
 class BatchCounterTest {
-    private final List<Integer> numbers;
-    private final Runnable defaultTask;
-    private final int partialSum;
-    private BatchCounter counter;
-
-    public BatchCounterTest() {
-        this.numbers = range();
-        this.defaultTask = () -> {
-            for (Integer number : numbers) {
-                counter.add(number);
-            }
-            counter.flush();
-        };
-        this.partialSum = numbers.stream().reduce(0, Integer::sum);
-    }
 
     private static List<Integer> range() {
         return IntStream.range(0, 1000).boxed().collect(Collectors.toList());
@@ -50,21 +36,31 @@ class BatchCounterTest {
         return result;
     }
 
-    @BeforeEach
-    void setUp() {
-        this.counter = new ConcurrentBatchingCounter();
+    public static Stream<Counter> batchCounterProvider() {
+        return Stream.of(new ConcurrentBatchingCounter(), new ConcurrentParameterizedBatchingCounter());
     }
 
-
-    @Test
-    void singleThreading() {
-        defaultTask.run();
-        assertEquals(partialSum, counter.show());
+    @ParameterizedTest
+    @MethodSource("batchCounterProvider")
+    void singleThreading(BatchCounter counter) {
+        // given
+        var numbers = range();
+        var partialSum = numbers.stream().reduce(0, Integer::sum);
+        Runnable task = () -> {
+            for (Integer number : numbers) {
+                counter.add(number);
+            }
+            counter.flush();
+        };
+        // when
+        task.run();
+        // then
+        Assertions.assertEquals(partialSum, counter.show());
     }
 
-
-    @Test
-    void conditionalMultiThreading() {
+    @ParameterizedTest
+    @MethodSource("batchCounterProvider")
+    void conditionalMultiThreading(BatchCounter counter) {
         // given
         int numberOfThreads = 2;
         int expected = Integer.MAX_VALUE / 1024;
@@ -82,11 +78,12 @@ class BatchCounterTest {
             }
         }
         // then
-        assertEquals(expected, counter.show());
+        Assertions.assertEquals(expected, counter.show());
     }
 
-    @Test
-    void conditionalAsyncVirtualMultiThreading() {
+    @ParameterizedTest
+    @MethodSource("batchCounterProvider")
+    void conditionalAsyncVirtualMultiThreading(BatchCounter counter) {
         // given
         int numberOfThreads = 2;
         int expected = Integer.MAX_VALUE / 1024;
@@ -99,12 +96,10 @@ class BatchCounterTest {
         };
         // when
         try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            List<CompletableFuture<Void>> futures = iterPerThread.stream()
-                .map(number -> CompletableFuture.runAsync(() -> task.accept(number), executor))
-                .toList();
+            List<CompletableFuture<Void>> futures = iterPerThread.stream().map(number -> CompletableFuture.runAsync(() -> task.accept(number), executor)).toList();
             futures.forEach(CompletableFuture::join);
         }
         // then
-        assertEquals(expected, counter.show());
+        Assertions.assertEquals(expected, counter.show());
     }
 }

@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 public class CounterTest {
 
     public static Stream<Counter> counterProvider() {
-        return Stream.of(new LockCounter(), new PollingCounter());
+        return Stream.of(new LockCounter(), new PollingCounter(), new SynchronizedCounter(), new AtomicCounter(), new CompletableFutureCounter());
     }
 
     private static void whenAdd(Counter counter, int nThreads, int addPerThread) {

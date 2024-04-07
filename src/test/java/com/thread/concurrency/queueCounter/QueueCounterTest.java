@@ -1,11 +1,11 @@
 package com.thread.concurrency.queueCounter;
 
-
-import com.thread.concurrency.counter.producerCustomer.CounterConsumer;
-import com.thread.concurrency.counter.producerCustomer.CounterProducer;
+import com.thread.concurrency.counter.queueCounter.CounterConsumer;
+import com.thread.concurrency.counter.queueCounter.CounterProducer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.concurrent.*;
@@ -64,7 +64,11 @@ public class QueueCounterTest {
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
         System.out.println("프로듀서_컨슈며_더하기_멀티_프로듀서_단일_컨슈머 테스트가 걸린 시간 : " + dif / 1000000 + "ms");
+<<<<<<< HEAD
         Assertions.assertEquals(initalCount + nAddsPerThread*producerNThreads*valueToAdd, finalCount);
+=======
+        Assertions.assertEquals(initalCount + nAddsPerThread*nThreads*valueToAdd, finalCount);
+>>>>>>> integrated_develop
     }
     @Test
     @DisplayName("멀티 프로듀서 멀티 컨슈머")

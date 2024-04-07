@@ -2,8 +2,9 @@ name: Run gradlew test
 
 on:
     pull_request:
-        branches-ignore:
-            - main
+        branches:
+            - develop
+            - feature/**
 
 jobs:
     build:
@@ -36,6 +37,6 @@ jobs:
                 with:
                     token: ${{ secrets.CODECOV_TOKEN }}
                     slug: spring-templates/spring-concurrency-thread
-                    fail_ci_if_error: true 
-                    verbose: true 
-                    flags: unittests
+                    fail_ci_if_error: true
+                    verbose: true
+                    flags: ${{ github.ref == 'refs/pull/develop' && 'integration' || 'unittests' }}

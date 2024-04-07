@@ -1,9 +1,6 @@
 package com.thread.concurrency;
 
-import com.thread.concurrency.counter.AtomicCounter;
-import com.thread.concurrency.counter.CompletableFutureCounter;
-import com.thread.concurrency.counter.Counter;
-import com.thread.concurrency.counter.SynchronizedCounter;
+import com.thread.concurrency.counter.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

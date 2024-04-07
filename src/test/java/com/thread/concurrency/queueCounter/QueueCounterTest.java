@@ -13,7 +13,8 @@ import java.util.concurrent.*;
 public class QueueCounterTest {
     private final int valueToAdd = 1;
     private final int nAddsPerThread = 50000000;
-    private final int nThreads = 9;
+    private final int producerNThreads = 9;
+    private final int consumerNThreads = 9;
     private final long timeout = 1;
     private final int queueCapacity = 1000;
     private final TimeUnit unit = TimeUnit.SECONDS;
@@ -26,13 +27,13 @@ public class QueueCounterTest {
         CounterProducer producer = new CounterProducer(queue);
         LocalTime lt1 = LocalTime.now();
         Long initalCount = consumer.show();
-        ExecutorService producerService = Executors.newFixedThreadPool(nThreads);
-        ExecutorService consumerService = Executors.newFixedThreadPool(nThreads);
-        CountDownLatch producerLatch = new CountDownLatch(nThreads);
+        ExecutorService producerService = Executors.newFixedThreadPool(producerNThreads);
+        ExecutorService consumerService = Executors.newFixedThreadPool(consumerNThreads);
+        CountDownLatch producerLatch = new CountDownLatch(producerNThreads);
         CountDownLatch consumerLatch = new CountDownLatch(1);
 
         // 프로듀서 스레드 생성
-        for (int i = 0; i < nThreads; i++) {
+        for (int i = 0; i < producerNThreads; i++) {
             producerService.submit(() -> {
                 try {
                     for(int j=0; j<nAddsPerThread; j++){
@@ -63,7 +64,7 @@ public class QueueCounterTest {
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
         System.out.println("프로듀서_컨슈며_더하기_멀티_프로듀서_단일_컨슈머 테스트가 걸린 시간 : " + dif / 1000000 + "ms");
-        Assertions.assertEquals(initalCount + nAddsPerThread*nThreads*valueToAdd, finalCount);
+        Assertions.assertEquals(initalCount + nAddsPerThread*producerNThreads*valueToAdd, finalCount);
     }
     @Test
     @DisplayName("멀티 프로듀서 멀티 컨슈머")
@@ -73,13 +74,13 @@ public class QueueCounterTest {
         CounterProducer producer = new CounterProducer(queue);
         LocalTime lt1 = LocalTime.now();
         Long initalCount = consumer.show();
-        ExecutorService producerService = Executors.newFixedThreadPool(nThreads);
-        ExecutorService consumerService = Executors.newFixedThreadPool(nThreads);
-        CountDownLatch producerLatch = new CountDownLatch(nThreads);
-        CountDownLatch consumerLatch = new CountDownLatch(nThreads);
+        ExecutorService producerService = Executors.newFixedThreadPool(producerNThreads);
+        ExecutorService consumerService = Executors.newFixedThreadPool(consumerNThreads);
+        CountDownLatch producerLatch = new CountDownLatch(producerNThreads);
+        CountDownLatch consumerLatch = new CountDownLatch(consumerNThreads);
 
         // 프로듀서 스레드 생성
-        for (int i = 0; i < nThreads; i++) {
+        for (int i = 0; i < producerNThreads; i++) {
             producerService.submit(() -> {
                 try {
                     for(int j=0; j<nAddsPerThread; j++){
@@ -92,7 +93,7 @@ public class QueueCounterTest {
             });
         }
         // 컨슈머 스레드 생성
-        for (int i = 0; i < nThreads; i++) {
+        for (int i = 0; i < consumerNThreads; i++) {
             consumerService.submit(() -> {
                 try {
                     consumer.consumeEvent(timeout, unit);
@@ -111,6 +112,6 @@ public class QueueCounterTest {
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
         System.out.println("프로듀서_컨슈며_더하기_멀티_프로듀서_단일_컨슈머 테스트가 걸린 시간 : " + dif / 1000000 + "ms");
-        Assertions.assertEquals(initalCount + nAddsPerThread*nThreads*valueToAdd, finalCount);
+        Assertions.assertEquals(initalCount + nAddsPerThread*producerNThreads*valueToAdd, finalCount);
     }
 }

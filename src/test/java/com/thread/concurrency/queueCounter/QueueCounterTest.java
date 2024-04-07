@@ -64,11 +64,7 @@ public class QueueCounterTest {
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
         System.out.println("프로듀서_컨슈며_더하기_멀티_프로듀서_단일_컨슈머 테스트가 걸린 시간 : " + dif / 1000000 + "ms");
-<<<<<<< HEAD
         Assertions.assertEquals(initalCount + nAddsPerThread*producerNThreads*valueToAdd, finalCount);
-=======
-        Assertions.assertEquals(initalCount + nAddsPerThread*nThreads*valueToAdd, finalCount);
->>>>>>> integrated_develop
     }
     @Test
     @DisplayName("멀티 프로듀서 멀티 컨슈머")

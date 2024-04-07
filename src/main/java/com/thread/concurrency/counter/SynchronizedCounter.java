@@ -3,7 +3,7 @@ package com.thread.concurrency.counter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SynchronizedCounter implements Counter{
+public class SynchronizedCounter implements Counter {
 
     private int counter = 100;
 

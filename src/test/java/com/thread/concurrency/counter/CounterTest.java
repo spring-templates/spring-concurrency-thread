@@ -34,7 +34,7 @@ public class CounterTest {
     public void stressTest(Counter counter) throws InterruptedException {
         int initialValue = counter.show();
         int nThreads = 100;
-        int nAddsPerThread = 1000;
+        int nAddsPerThread = 100000;
         int valueToAdd = 1;
         int expectedValue = initialValue + nThreads * nAddsPerThread * valueToAdd;
 

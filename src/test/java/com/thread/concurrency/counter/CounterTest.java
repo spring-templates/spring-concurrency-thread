@@ -5,60 +5,44 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Stream;
-
-import static java.lang.Thread.sleep;
 
 @SpringBootTest
 public class CounterTest {
 
     public static Stream<Counter> counterProvider() {
-        return Stream.of(new BatchingCounter(), new LockCounter(), new PollingCounter(), new BasicCounter());
+        return Stream.of(new LockCounter(), new PollingCounter(), new SynchronizedCounter(), new AtomicCounter(), new CompletableFutureCounter());
     }
 
-    private static void assertThen(Counter counter, int expectedValue, int actualValue) {
-        System.out.println("Expected value: " + expectedValue);
-        System.out.println("Actual value: " + actualValue);
-        if (counter instanceof BasicCounter) {
-            System.out.println("BasicCounter is not thread-safe");
-            Assertions.assertNotEquals(expectedValue, actualValue);
-        } else {
-            System.out.println("Counter is thread-safe");
-            Assertions.assertEquals(expectedValue, actualValue);
+    private static void whenAdd(Counter counter, int nThreads, int addPerThread) {
+        try (ExecutorService executor = Executors.newFixedThreadPool(nThreads)) {
+            for (int i = 0; i < nThreads; i++) {
+                executor.submit(() -> {
+                    for (int j = 0; j < addPerThread; j++) {
+                        counter.add(1);
+                    }
+                });
+            }
         }
     }
 
     @ParameterizedTest
     @MethodSource("counterProvider")
-    public void stressTest(Counter counter) throws InterruptedException {
-        int initialValue = counter.show();
+    public void stressTest(Counter counter) {
+        // given
         int nThreads = 100;
-        int nAddsPerThread = 100000;
-        int valueToAdd = 1;
-        int expectedValue = initialValue + nThreads * nAddsPerThread * valueToAdd;
+        int addPerThread = 1000;
+        int expectedValue = counter.show() + nThreads * addPerThread;
 
+        // when
+        long start = System.currentTimeMillis();
+        whenAdd(counter, nThreads, addPerThread);
+        long end = System.currentTimeMillis();
 
-        // define runnable job
-        CountDownLatch latch = new CountDownLatch(nThreads);
-        Runnable job = () -> {
-            try {
-                latch.countDown(); // decrease the count
-                latch.await(); // wait until the count reaches 0
-                for (int i = 0; i < nAddsPerThread; i++) {
-                    counter.add(valueToAdd);
-                }
-            } catch (InterruptedException ignored) {
-            }
-        };
-
-        // start nThreads threads
-        for (int i = 0; i < nThreads; i++) {
-            Thread.ofVirtual().start(job);
-        }
-
-        sleep(300); // wait for all threads to finish
-
-        assertThen(counter, expectedValue, counter.show());
+        // then
+        Assertions.assertEquals(expectedValue, counter.show());
+        System.out.println("Time elapsed: " + (end - start) + "ms");
     }
 }

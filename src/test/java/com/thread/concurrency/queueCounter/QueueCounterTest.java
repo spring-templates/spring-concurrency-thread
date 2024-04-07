@@ -58,9 +58,7 @@ public class QueueCounterTest {
             }
         });
         consumerLatch.await();
-        System.out.println("컨슈머 작업 끝남");
         producerLatch.await();
-        System.out.println("프로듀서 작업 끝남");
 
         Long finalCount = consumer.show();
         LocalTime lt2 = LocalTime.now();

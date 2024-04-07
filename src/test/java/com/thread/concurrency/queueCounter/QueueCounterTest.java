@@ -38,7 +38,7 @@ public class QueueCounterTest {
         for (int i = 0; i < producerNThreads; i++) {
             producerService.submit(() -> {
                 try {
-                    for(int j=0; j<nAddsPerThread; j++){
+                    for (int j = 0; j < nAddsPerThread; j++) {
                         producer.add(valueToAdd);
                     }
                 } catch (InterruptedException e) {
@@ -64,8 +64,9 @@ public class QueueCounterTest {
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
         System.out.println("멀티_프로듀서_단일_컨슈머 테스트가 걸린 시간 : " + dif / 1000000 + "ms");
-        Assertions.assertEquals(initalCount + nAddsPerThread*producerNThreads*valueToAdd, finalCount);
+        Assertions.assertEquals(initalCount + nAddsPerThread * producerNThreads * valueToAdd, finalCount);
     }
+
     @Test
     @DisplayName("멀티 프로듀서 멀티 컨슈머")
     public void 멀티_프로듀서_멀티_컨슈머() throws InterruptedException {
@@ -83,7 +84,7 @@ public class QueueCounterTest {
         for (int i = 0; i < producerNThreads; i++) {
             producerService.submit(() -> {
                 try {
-                    for(int j=0; j<nAddsPerThread; j++){
+                    for (int j = 0; j < nAddsPerThread; j++) {
                         producer.add(valueToAdd);
                     }
                 } catch (InterruptedException e) {
@@ -110,6 +111,6 @@ public class QueueCounterTest {
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
         System.out.println("멀티_프로듀서_멀티_컨슈머 테스트가 걸린 시간 : " + dif / 1000000 + "ms");
-        Assertions.assertEquals(initalCount + nAddsPerThread*producerNThreads*valueToAdd, finalCount);
+        Assertions.assertEquals(initalCount + nAddsPerThread * producerNThreads * valueToAdd, finalCount);
     }
 }

@@ -1,7 +1,9 @@
 package com.thread.concurrency.async;
 
 import com.thread.concurrency.async.service.AsyncService;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,20 +24,20 @@ public class AsyncServiceTest {
     @Test
     @DisplayName("입력은 void 출력은 String인 비동기 함수 단일 호출")
     public void testGetString() throws ExecutionException, InterruptedException {
-        CompletableFuture<String> helloWorld = asyncService.voidParamStringReturn(1000,  "기본 메세지");
-        Assertions.assertEquals("기본 메세지",helloWorld.get());
+        CompletableFuture<String> helloWorld = asyncService.voidParamStringReturn(1000, "기본 메세지");
+        Assertions.assertEquals("기본 메세지", helloWorld.get());
     }
 
     @Test
     @DisplayName("입력은 void 출력은 String인 비동기 함수 다중 호출")
     public void testGetMultiString() throws InterruptedException {
         List<CompletableFuture<String>> hellos = new ArrayList<>();
-        for(int i=0; i<100; i++){
-            hellos.add(asyncService.voidParamStringReturn(1000,i+"번째 메세지"));
+        for (int i = 0; i < 100; i++) {
+            hellos.add(asyncService.voidParamStringReturn(1000, i + "번째 메세지"));
         }
         // 모든 비동기 호출이 완료될 때까지 대기하고 결과를 리스트에 넣기
         List<String> results = hellos.stream().map(CompletableFuture::join)
-                .toList();
+            .toList();
         results.forEach(logger::info);
     }
 
@@ -47,6 +49,6 @@ public class AsyncServiceTest {
         long timeOutValue = 1;
         TimeUnit timeUnit = TimeUnit.SECONDS;
         // 1초가 지난 후 타임아웃 발생
-        Assertions.assertThrows(ExecutionException.class, () -> completableFuture.orTimeout(timeOutValue,timeUnit).get());
+        Assertions.assertThrows(ExecutionException.class, () -> completableFuture.orTimeout(timeOutValue, timeUnit).get());
     }
 }

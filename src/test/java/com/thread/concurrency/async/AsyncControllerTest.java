@@ -21,7 +21,7 @@ public class AsyncControllerTest {
     @Test
     public void invokeMultiAsyncMethod() throws InterruptedException {
         List<CompletableFuture<String>> hellos = new ArrayList<>();
-        for(int i=0; i<10; i++){
+        for (int i = 0; i < 10; i++) {
             hellos.add(asyncController.calculateRunTime(10, 1000));
         }
         // 모든 비동기 호출이 완료될 때까지 대기하고 결과를 리스트에 넣기

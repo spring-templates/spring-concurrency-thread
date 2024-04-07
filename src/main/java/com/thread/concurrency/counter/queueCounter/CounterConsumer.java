@@ -15,15 +15,16 @@ public class CounterConsumer implements Consumer {
     public void consumeEvent(long timeout, TimeUnit unit) throws InterruptedException {
         while (true) {
             Long value = queue.poll(timeout, unit);
-            if(value == null){
+            if (value == null) {
                 break;
             }
             count.addAndGet(value);
         }
     }
-    public Long show(){
-        while(true){
-            if(queue.isEmpty()){
+
+    public Long show() {
+        while (true) {
+            if (queue.isEmpty()) {
                 return count.get();
             }
         }

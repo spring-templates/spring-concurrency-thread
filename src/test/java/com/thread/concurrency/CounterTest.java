@@ -1,6 +1,9 @@
 package com.thread.concurrency;
 
-import com.thread.concurrency.counter.*;
+import com.thread.concurrency.counter.AtomicCounter;
+import com.thread.concurrency.counter.CompletableFutureCounter;
+import com.thread.concurrency.counter.Counter;
+import com.thread.concurrency.counter.SynchronizedCounter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,7 +38,7 @@ public class CounterTest {
         CountDownLatch latch = new CountDownLatch(nThreads);
         for (int i = 0; i < nThreads; i++) {
             service.submit(() -> {
-                for(int j=0; j<nAddsPerThread; j++){
+                for (int j = 0; j < nAddsPerThread; j++) {
                     counter.add(valueToAdd);
                 }
                 latch.countDown();
@@ -45,10 +48,10 @@ public class CounterTest {
         int finalCount = counter.show();
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
-        System.out.println("여러_더하기_수행_Executor 테스트가 걸린 시간 : " + ((float)dif / 1000000) + "ms");
+        System.out.println("여러_더하기_수행_Executor 테스트가 걸린 시간 : " + ((float) dif / 1000000) + "ms");
         Runtime.getRuntime().gc();
         long usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-        System.out.println("메모리 사용량 "+(double)usedMemory/1048576 + " MB");
-        Assertions.assertEquals(initalCount + nThreads*nAddsPerThread*valueToAdd, finalCount);
+        System.out.println("메모리 사용량 " + (double) usedMemory / 1048576 + " MB");
+        Assertions.assertEquals(initalCount + nThreads * nAddsPerThread * valueToAdd, finalCount);
     }
 }

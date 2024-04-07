@@ -1,7 +1,9 @@
 package com.thread.concurrency.queueCounter;
 
+import com.thread.concurrency.counter.queueCounter.Consumer;
 import com.thread.concurrency.counter.queueCounter.CounterConsumer;
 import com.thread.concurrency.counter.queueCounter.CounterProducer;
+import com.thread.concurrency.counter.queueCounter.Producer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,8 +25,8 @@ public class QueueCounterTest {
     @DisplayName("멀티 프로듀서 싱글 컨슈머")
     public void 멀티_프로듀서_싱글_컨슈머() throws InterruptedException {
         BlockingQueue<Long> queue = new LinkedBlockingQueue<>(queueCapacity);
-        CounterConsumer consumer = new CounterConsumer(queue);
-        CounterProducer producer = new CounterProducer(queue);
+        Consumer consumer = new CounterConsumer(queue);
+        Producer producer = new CounterProducer(queue);
         LocalTime lt1 = LocalTime.now();
         Long initalCount = consumer.show();
         ExecutorService producerService = Executors.newFixedThreadPool(producerNThreads);
@@ -70,8 +72,8 @@ public class QueueCounterTest {
     @DisplayName("멀티 프로듀서 멀티 컨슈머")
     public void 멀티_프로듀서_멀티_컨슈머() throws InterruptedException {
         BlockingQueue<Long> queue = new LinkedBlockingQueue<>(queueCapacity);
-        CounterConsumer consumer = new CounterConsumer(queue);
-        CounterProducer producer = new CounterProducer(queue);
+        Consumer consumer = new CounterConsumer(queue);
+        Producer producer = new CounterProducer(queue);
         LocalTime lt1 = LocalTime.now();
         Long initalCount = consumer.show();
         ExecutorService producerService = Executors.newFixedThreadPool(producerNThreads);

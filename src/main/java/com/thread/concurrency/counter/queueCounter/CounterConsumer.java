@@ -4,7 +4,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class CounterConsumer {
+public class CounterConsumer implements Consumer {
     private final BlockingQueue<Long> queue;
     private final AtomicLong count = new AtomicLong(0);
 
@@ -14,14 +14,11 @@ public class CounterConsumer {
 
     public void consumeEvent(long timeout, TimeUnit unit) throws InterruptedException {
         while (true) {
-//            System.out.println(Thread.currentThread().getName()+"은 현재 큐 사이즈 : "+queue.size());
             Long value = queue.poll(timeout, unit);
             if(value == null){
-//                System.out.println(Thread.currentThread().getName()+" 끝났으!!");
                 break;
             }
             count.addAndGet(value);
-//            System.out.println("결s과 카운트 : "+count.addAndGet(value));
         }
     }
     public Long show(){

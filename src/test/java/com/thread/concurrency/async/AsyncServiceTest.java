@@ -1,4 +1,4 @@
-package com.thread.concurrency;
+package com.thread.concurrency.async;
 
 import com.thread.concurrency.async.service.AsyncService;
 import org.junit.jupiter.api.*;

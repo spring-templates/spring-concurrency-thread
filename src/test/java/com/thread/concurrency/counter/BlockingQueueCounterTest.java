@@ -13,9 +13,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.*;
-import java.util.function.Function;
 
-public class QueueCounterTest {
+public class BlockingQueueCounterTest {
     private final int counteNumber = 1;
     private final int totalCount = Integer.MAX_VALUE;
     private final int nThread = 15;
@@ -34,11 +33,9 @@ public class QueueCounterTest {
 
         // 프로듀서 스레드 생성
         for (int i = 0; i < nThread; i++) {
-//            int finalI = i;
             service.submit(() -> {
                 try {
                     for(int j=0; j<(totalCount/nThread); j++){
-//                        System.out.println(Thread.currentThread().getName()+"은 작업 추가 "+ finalI +" "+j);
                         producer.add(counteNumber);
                     }
                 } catch (InterruptedException e) {

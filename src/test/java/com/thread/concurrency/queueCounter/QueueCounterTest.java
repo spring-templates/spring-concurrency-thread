@@ -63,7 +63,7 @@ public class QueueCounterTest {
         Long finalCount = consumer.show();
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
-        System.out.println("프로듀서_컨슈며_더하기_멀티_프로듀서_단일_컨슈머 테스트가 걸린 시간 : " + dif / 1000000 + "ms");
+        System.out.println("멀티_프로듀서_단일_컨슈머 테스트가 걸린 시간 : " + dif / 1000000 + "ms");
         Assertions.assertEquals(initalCount + nAddsPerThread*producerNThreads*valueToAdd, finalCount);
     }
     @Test
@@ -104,14 +104,12 @@ public class QueueCounterTest {
             });
         }
         consumerLatch.await();
-        System.out.println("컨슈머 작업 끝남");
         producerLatch.await();
-        System.out.println("프로듀서 작업 끝남");
 
         Long finalCount = consumer.show();
         LocalTime lt2 = LocalTime.now();
         long dif = Duration.between(lt1, lt2).getNano();
-        System.out.println("프로듀서_컨슈며_더하기_멀티_프로듀서_단일_컨슈머 테스트가 걸린 시간 : " + dif / 1000000 + "ms");
+        System.out.println("멀티_프로듀서_멀티_컨슈머 테스트가 걸린 시간 : " + dif / 1000000 + "ms");
         Assertions.assertEquals(initalCount + nAddsPerThread*producerNThreads*valueToAdd, finalCount);
     }
 }

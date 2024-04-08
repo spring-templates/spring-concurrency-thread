@@ -1,9 +1,5 @@
-package com.thread.concurrency.queueCounter;
+package com.thread.concurrency.counter.queue;
 
-import com.thread.concurrency.counter.queueCounter.Consumer;
-import com.thread.concurrency.counter.queueCounter.CounterConsumer;
-import com.thread.concurrency.counter.queueCounter.CounterProducer;
-import com.thread.concurrency.counter.queueCounter.Producer;
 import org.junit.jupiter.api.*;
 
 import java.time.Duration;

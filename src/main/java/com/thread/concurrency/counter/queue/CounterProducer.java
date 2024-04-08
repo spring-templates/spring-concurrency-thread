@@ -1,4 +1,4 @@
-package com.thread.concurrency.counter.queueCounter;
+package com.thread.concurrency.counter.queue;
 
 import java.util.concurrent.BlockingQueue;
 

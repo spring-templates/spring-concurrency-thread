@@ -12,9 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component
 @Profile("dev")
 public class ConcurrentParameterizedBatchingCounter implements BatchCounter {
-
     private static final int BATCH_SIZE = 100;
-
     private final AtomicLong counter = new AtomicLong();
     private final ConcurrentMap<Long, List<Integer>> batch = new ConcurrentHashMap<>();
 

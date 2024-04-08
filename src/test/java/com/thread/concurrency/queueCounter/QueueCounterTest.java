@@ -16,8 +16,8 @@ public class QueueCounterTest {
     private static final int consumerNThreads = 9;
     private Consumer consumer;
     private Producer producer;
-    private ExecutorService consumerService;
-    private ExecutorService producerService;
+    private ExecutorService consumerExecutor;
+    private ExecutorService producerExecutor;
 
     @BeforeEach
     public void setup() {
@@ -25,32 +25,28 @@ public class QueueCounterTest {
         BlockingQueue<Long> queue = new LinkedBlockingQueue<>(queueCapacity);
         consumer = new CounterConsumer(queue);
         producer = new CounterProducer(queue);
-        producerService = Executors.newFixedThreadPool(producerNThreads);
-        consumerService = Executors.newFixedThreadPool(consumerNThreads);
+        producerExecutor = Executors.newFixedThreadPool(producerNThreads);
+        consumerExecutor = Executors.newFixedThreadPool(consumerNThreads);
     }
 
     @AfterEach
     public void cleanup() {
-        producerService.shutdown();
-        consumerService.shutdown();
+        producerExecutor.shutdown();
+        consumerExecutor.shutdown();
     }
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
     @DisplayName("멀티 프로듀서 싱글 컨슈머")
     public void multiProducerSingleConsumer() {
-        Assertions.assertTimeout(Duration.ofSeconds(10), () -> {
-            runTest(1);
-        });
+        Assertions.assertTimeout(Duration.ofSeconds(10), () -> runTest(1));
     }
 
     @Test
     @SuppressWarnings("SpellCheckingInspection")
     @DisplayName("멀티 프로듀서 멀티 컨슈머")
     public void multiProducerMultiConsumer() {
-        Assertions.assertTimeout(Duration.ofSeconds(10), () -> {
-            runTest(consumerNThreads);
-        });
+        Assertions.assertTimeout(Duration.ofSeconds(10), () -> runTest(consumerNThreads));
     }
 
     private void runTest(int consumerCount) throws InterruptedException {
@@ -69,30 +65,26 @@ public class QueueCounterTest {
     }
 
     private void createProducerThreads(CountDownLatch producerLatch) {
+        Callable<Void> task = () -> {
+            for (int j = 0; j < nAddsPerThread; j++) {
+                producer.add(valueToAdd);
+            }
+            producerLatch.countDown();
+            return null;
+        };
         for (int i = 0; i < producerNThreads; i++) {
-            producerService.submit(() -> {
-                try {
-                    for (int j = 0; j < nAddsPerThread; j++) {
-                        producer.add(valueToAdd);
-                    }
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                producerLatch.countDown();
-            });
+            producerExecutor.submit(task);
         }
     }
 
     private void createConsumerThreads(CountDownLatch consumerLatch, int consumerCount) {
+        Callable<Void> task = () -> {
+            consumer.consumeEvent(1, TimeUnit.SECONDS);
+            consumerLatch.countDown();
+            return null;
+        };
         for (int i = 0; i < consumerCount; i++) {
-            consumerService.submit(() -> {
-                try {
-                    consumer.consumeEvent(1, TimeUnit.SECONDS);
-                    consumerLatch.countDown();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            consumerExecutor.submit(task);
         }
     }
 }

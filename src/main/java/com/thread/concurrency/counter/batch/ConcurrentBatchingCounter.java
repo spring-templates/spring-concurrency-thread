@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.LongAdder;
 
 @Component
 public class ConcurrentBatchingCounter implements BatchCounter {
-
     private final AtomicLong counter = new AtomicLong();
     private final ConcurrentMap<Long, LongAdder> batch = new ConcurrentHashMap<>();
 

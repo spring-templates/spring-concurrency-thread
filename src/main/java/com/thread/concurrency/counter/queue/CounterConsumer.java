@@ -1,9 +1,12 @@
 package com.thread.concurrency.counter.queue;
 
+import org.springframework.context.annotation.Profile;
+
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Profile("dev")
 public class CounterConsumer implements Consumer {
     private final BlockingQueue<Long> queue;
     private final AtomicLong count = new AtomicLong(0);

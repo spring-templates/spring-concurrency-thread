@@ -3,13 +3,11 @@ package com.thread.concurrency.counter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Stream;
 
-@SpringBootTest
 public class CounterTest {
 
     public static Stream<Counter> counterProvider() {

@@ -17,4 +17,9 @@ public class AtomicCounter implements Counter {
     public int show() {
         return count.get();
     }
+
+    @Override
+    public void clear() {
+        count.set(0);
+    }
 }

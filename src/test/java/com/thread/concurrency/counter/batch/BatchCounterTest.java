@@ -37,7 +37,7 @@ class BatchCounterTest {
     }
 
     public static Stream<Counter> batchCounterProvider() {
-        return Stream.of(new ConcurrentBatchingCounter(), new ConcurrentParameterizedBatchingCounter());
+        return Stream.of(new AtomicBatchCounter(), new ConcurrentParameterizedBatchingCounter());
     }
 
     @ParameterizedTest

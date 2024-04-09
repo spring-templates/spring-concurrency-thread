@@ -30,6 +30,12 @@ public class ConcurrentParameterizedBatchingCounter implements BatchCounter {
         return counter.intValue();
     }
 
+    @Override
+    public void clear() {
+        counter.set(0);
+        batch.clear();
+    }
+
     private void flush(long threadId) {
         var list = batch.getOrDefault(threadId, null);
         if (list != null && !list.isEmpty()) {

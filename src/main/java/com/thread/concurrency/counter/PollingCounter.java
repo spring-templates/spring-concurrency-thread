@@ -3,8 +3,6 @@ package com.thread.concurrency.counter;
 import org.springframework.stereotype.Component;
 
 @Component
-// use technique spin-lock(busy waiting)
-// this approach can lead to high CPU usage if the lock is heavily contended
 public class PollingCounter implements Counter {
     private static int count = 100;
     private static volatile boolean lock = false;
@@ -30,5 +28,19 @@ public class PollingCounter implements Counter {
     @Override
     public int show() {
         return count;
+    }
+
+    @Override
+    public void clear() {
+        while (true) {
+            if (!lock) {
+                synchronized (PollingCounter.class) {
+                    lock = true;
+                    count = 0;
+                    lock = false;
+                    break;
+                }
+            }
+        }
     }
 }

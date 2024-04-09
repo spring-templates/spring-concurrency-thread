@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 
 @Component
-public class ConcurrentBatchingCounter implements BatchCounter {
+public class AtomicBatchCounter implements BatchCounter {
     private final AtomicLong counter = new AtomicLong();
     private final ConcurrentMap<Long, LongAdder> batch = new ConcurrentHashMap<>();
 
@@ -34,5 +34,11 @@ public class ConcurrentBatchingCounter implements BatchCounter {
     public void flush() {
         var threadId = Thread.currentThread().threadId();
         flush(threadId);
+    }
+
+    @Override
+    public void clear() {
+        counter.set(0);
+        batch.clear();
     }
 }

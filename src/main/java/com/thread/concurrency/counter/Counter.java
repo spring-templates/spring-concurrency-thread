@@ -4,4 +4,6 @@ public interface Counter {
     void add(int value);
 
     int show();
+
+    void clear();
 }

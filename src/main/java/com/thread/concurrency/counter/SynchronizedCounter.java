@@ -16,4 +16,9 @@ public class SynchronizedCounter implements Counter {
     public synchronized int show() {
         return counter;
     }
+
+    @Override
+    public synchronized void clear() {
+        counter = 0;
+    }
 }

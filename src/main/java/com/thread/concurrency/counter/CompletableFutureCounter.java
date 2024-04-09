@@ -7,7 +7,6 @@ import java.util.concurrent.ExecutionException;
 
 @Component
 public class CompletableFutureCounter implements Counter {
-
     private CompletableFuture<Integer> counter;
 
     public CompletableFutureCounter() {
@@ -28,6 +27,13 @@ public class CompletableFutureCounter implements Counter {
             return counter.get();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void clear() {
+        synchronized (this) {
+            counter = CompletableFuture.completedFuture(0);
         }
     }
 }

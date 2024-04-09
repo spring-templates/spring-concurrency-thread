@@ -23,4 +23,14 @@ public class LockCounter implements Counter {
     public int show() {
         return count;
     }
+
+    @Override
+    public void clear() {
+        lock.lock();
+        try {
+            count = 0;
+        } finally {
+            lock.unlock();
+        }
+    }
 }

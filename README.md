@@ -17,36 +17,34 @@
 
 - [동시성 기본 조건과 관심사](https://github.com/spring-templates/spring-concurrency-thread/discussions/2)
 
-## 카운터 밴치 마크
+# [Counter-implementation Benchmark](https://www.notion.so/softsquared/f314375356b54381a8878cf2dabd381b)
 
-**실험 환경**
+> - median of 25 iterations
+> - nRequests: 2^21 - 1
 
-칩 : Apple M2 8코어,
-메모리 : 16GB
+| name              | nThreads | time (ms) | memory (KB) |
+|-------------------|----------|-----------|-------------|
+| AtomicBatch       | 4        | 12        | 480         |
+| Atomic            | 1        | 14        | 318         |
+| AtomicBatch       | 1        | 30        | 240         |
+| Lock              | 1        | 61        | 241         |
+| Synchronized      | 1        | 61        | 241         |
+| Polling           | 1        | 78        | 463         |
+| CompletableFuture | 1        | 158       | 25710       |
 
-| 5회 평균                    | 최대 스레드 개수 | 전체 요청 수   | 테스트 시간(ms) | 메모리 사용량(MB) |
-|--------------------------|-----------|-----------|------------|-------------|
-| AtomicCounter            | 9         | 5,000,000 | 321.15     | 12.82       |
-| AtomicCounter            | 15        | 5,000,000 | 419.33     | 12.16       |
-| CompletableFutureCounter | 9         | 5,000,000 | 885.95     | 11.78       |
-| CompletableFutureCounter | 15        | 5,000,000 | 939.16     | 11.78       |
-| SynchronizedCounter      | 9         | 5,000,000 | 398.63     | 12.32       |
-| SynchronizedCounter      | 15        | 5,000,000 | 495.99     | 11.86       |
+### AtomicBatch vs Atomic
 
-- **프로세서** 12th Gen Intel(R) Core(TM) i7-12650H, 2300Mhz, 10 코어, 16 논리 프로세서
+> - nThreads: AtomicBatch=4, Atomic=1
 
-- **구현체** ConcurrentBatchingCounter
-
-- **전체 요청 수** Integer.MAX_VALUE
-
-| 스레드 개수 | 테스트 시간(s) | 메모리 사용량(MB) |
-|--------|-----------|-------------|
-| 1      | 26-28     | 4           |
-| 2      | 14        | 4           |
-| 4      | 9         | 4           |
-| 8      | 7         | 4           |
-| 16     | 5         | 4           |
-| 32     | 5-6       | 4           |
-| 64     | 6         | 4           |
-| 128    | 9         | 337         |
-| 1024   | 10        | 373         |
+| name        | nRequests | time (ms) | memory (KB) |
+|-------------|-----------|-----------|-------------|
+| AtomicBatch | 2^21 - 1  | 12        | 480         |
+| AtomicBatch | 2^22 - 1  | 24        | 538         |
+| AtomicBatch | 2^23 - 1  | 42        | 572         |
+| AtomicBatch | 2^30 - 1  | 5695      | 511         |
+| AtomicBatch | 2^31 - 1  | 11621     | 294         |
+| Atomic      | 2^21 - 1  | 14        | 318         |
+| Atomic      | 2^22 - 1  | 27        | 244         |
+| Atomic      | 2^23 - 1  | 55        | 344         |
+| Atomic      | 2^30 - 1  | 7178      | 103         |
+| Atomic      | 2^31 - 1  | 14377     | 266         |

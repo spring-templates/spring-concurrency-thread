@@ -14,18 +14,6 @@ public class CounterTest {
         return Stream.of(new LockCounter(), new PollingCounter(), new SynchronizedCounter(), new AtomicCounter(), new CompletableFutureCounter());
     }
 
-    private static void whenAdd(Counter counter, int nThreads, int addPerThread) {
-        try (ExecutorService executor = Executors.newFixedThreadPool(nThreads)) {
-            for (int i = 0; i < nThreads; i++) {
-                executor.submit(() -> {
-                    for (int j = 0; j < addPerThread; j++) {
-                        counter.add(1);
-                    }
-                });
-            }
-        }
-    }
-
     @ParameterizedTest
     @MethodSource("counterProvider")
     public void stressTest(Counter counter) {
@@ -42,5 +30,17 @@ public class CounterTest {
         // then
         Assertions.assertEquals(expectedValue, counter.show());
         System.out.println("Time elapsed: " + (end - start) + "ms");
+    }
+
+    private static void whenAdd(Counter counter, int nThreads, int addPerThread) {
+        try (ExecutorService executor = Executors.newFixedThreadPool(nThreads)) {
+            for (int i = 0; i < nThreads; i++) {
+                executor.submit(() -> {
+                    for (int j = 0; j < addPerThread; j++) {
+                        counter.add(1);
+                    }
+                });
+            }
+        }
     }
 }

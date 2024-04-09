@@ -29,18 +29,6 @@ public class CounterBenchmark {
         this.totalRequests = config.totalRequests();
     }
 
-    private void doAdd(List<Integer> params, Consumer<Integer> task) {
-        try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            counter.clear();
-            List<CompletableFuture<Void>> futures = new ArrayList<>();
-            for (int i = 0; i < nThreads; i++) {
-                int nRequest = params.get(i);
-                futures.add(CompletableFuture.runAsync(() -> task.accept(nRequest), executor));
-            }
-            futures.forEach(CompletableFuture::join);
-        }
-    }
-
     public Performance benchmark() {
         System.out.printf("| %-20s | %13s | %13s | %13s |%n", "Name", "Time", "Threads", "Memory");
         System.out.println("|----------------------|---------------|---------------|---------------|");
@@ -80,6 +68,18 @@ public class CounterBenchmark {
         long timeElapsed = timeOnEnd - timeOnStart;
         long memoryUsed = memoryOnEnd - memoryOnStart;
         return new Performance(counterName, timeElapsed, iterPerThread.size(), memoryUsed);
+    }
+
+    private void doAdd(List<Integer> params, Consumer<Integer> task) {
+        try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            counter.clear();
+            List<CompletableFuture<Void>> futures = new ArrayList<>();
+            for (int i = 0; i < nThreads; i++) {
+                int nRequest = params.get(i);
+                futures.add(CompletableFuture.runAsync(() -> task.accept(nRequest), executor));
+            }
+            futures.forEach(CompletableFuture::join);
+        }
     }
 
     private List<Integer> range() {

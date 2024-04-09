@@ -23,11 +23,10 @@ public class AtomicBatchCounter implements BatchCounter {
         return counter.intValue();
     }
 
-    private void flush(long threadId) {
-        var value = batch.remove(threadId);
-        if (value != null) {
-            counter.addAndGet(value.longValue());
-        }
+    @Override
+    public void clear() {
+        counter.set(0);
+        batch.clear();
     }
 
     @Override
@@ -36,9 +35,10 @@ public class AtomicBatchCounter implements BatchCounter {
         flush(threadId);
     }
 
-    @Override
-    public void clear() {
-        counter.set(0);
-        batch.clear();
+    private void flush(long threadId) {
+        var value = batch.remove(threadId);
+        if (value != null) {
+            counter.addAndGet(value.longValue());
+        }
     }
 }

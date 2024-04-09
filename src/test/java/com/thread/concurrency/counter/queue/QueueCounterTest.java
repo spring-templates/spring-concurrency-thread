@@ -38,13 +38,6 @@ public class QueueCounterTest {
         Assertions.assertTimeout(Duration.ofSeconds(10), () -> runTest(1));
     }
 
-    @Test
-    @SuppressWarnings("SpellCheckingInspection")
-    @DisplayName("멀티 프로듀서 멀티 컨슈머")
-    public void multiProducerMultiConsumer() {
-        Assertions.assertTimeout(Duration.ofSeconds(10), () -> runTest(consumerNThreads));
-    }
-
     private void runTest(int consumerCount) throws InterruptedException {
         Long initialCount = consumer.show();
         CountDownLatch producerLatch = new CountDownLatch(producerNThreads);
@@ -82,5 +75,12 @@ public class QueueCounterTest {
         for (int i = 0; i < consumerCount; i++) {
             consumerExecutor.submit(task);
         }
+    }
+
+    @Test
+    @SuppressWarnings("SpellCheckingInspection")
+    @DisplayName("멀티 프로듀서 멀티 컨슈머")
+    public void multiProducerMultiConsumer() {
+        Assertions.assertTimeout(Duration.ofSeconds(10), () -> runTest(consumerNThreads));
     }
 }

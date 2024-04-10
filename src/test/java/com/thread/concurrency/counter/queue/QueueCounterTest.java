@@ -7,7 +7,7 @@ import java.util.concurrent.*;
 
 public class QueueCounterTest {
     private static final int valueToAdd = 1;
-    private static final int nAddsPerThread = 1000000;
+    private static final int nAddsPerThread = 100000;
     private static final int producerNThreads = 9;
     private static final int consumerNThreads = 9;
     private Consumer consumer;

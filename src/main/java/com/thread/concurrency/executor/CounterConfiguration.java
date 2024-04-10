@@ -17,7 +17,7 @@ public class CounterConfiguration {
     @Bean
     public CounterConfig counterConfig(Counter counter) {
         int iterations = 25;
-        int totalRequest = Integer.MAX_VALUE;
+        int totalRequest = Integer.MAX_VALUE / 1024;
         int nThreads = 1;
         return new CounterConfig(counter, iterations, totalRequest, nThreads);
     }

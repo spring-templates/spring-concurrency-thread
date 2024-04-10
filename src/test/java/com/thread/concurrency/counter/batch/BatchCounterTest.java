@@ -23,6 +23,14 @@ class BatchCounterTest {
 
     @ParameterizedTest
     @MethodSource("batchCounterProvider")
+    void clearTest(BatchCounter counter) {
+        counter.add(1000);
+        counter.clear();
+        Assertions.assertEquals(0, counter.show());
+    }
+
+    @ParameterizedTest
+    @MethodSource("batchCounterProvider")
     void singleThreading(BatchCounter counter) {
         // given
         var numbers = range();

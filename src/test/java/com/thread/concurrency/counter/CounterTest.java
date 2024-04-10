@@ -32,7 +32,7 @@ public class CounterTest {
         System.out.println("Time elapsed: " + (end - start) + "ms");
     }
 
-    private static void whenAdd(Counter counter, int nThreads, int addPerThread) {
+    private void whenAdd(Counter counter, int nThreads, int addPerThread) {
         try (ExecutorService executor = Executors.newFixedThreadPool(nThreads)) {
             for (int i = 0; i < nThreads; i++) {
                 executor.submit(() -> {
@@ -42,5 +42,13 @@ public class CounterTest {
                 });
             }
         }
+    }
+
+    @ParameterizedTest
+    @MethodSource("counterProvider")
+    public void clearTest(Counter counter) {
+        counter.add(1000);
+        counter.clear();
+        Assertions.assertEquals(0, counter.show());
     }
 }
